@@ -17,7 +17,7 @@ function wmsTrim(data) {
     }
 
     if (data.startsWith("{")) {
-        return data.trim().substr(1);
+        return data.trim().slice(1);
     } else {
         return data.trim();
     }
@@ -31,7 +31,7 @@ function snrNumToHex(snr) {
         // Fuehrede 0
         hex = Array(6 + 1 - hex.length).join('0') + hex;
         // von 0A2469 zu 69240A
-        hex = hex.substr(4, 2) + hex.substr(2, 2) + hex.substr(0, 2);
+        hex = hex.slice(4, 4 + 2) + hex.slice(2, 2 + 2) + hex.slice(0, 0 + 2);
     } else {
         hex = snr;
     }
@@ -45,7 +45,7 @@ function snrHexToNum(hex) {
         // leading 0
         hex = Array(6 + 1 - hex.length).join('0') + hex;
         // from 69240A to 0A2469
-        hex = hex.substr(4, 2) + hex.substr(2, 2) + hex.substr(0, 2);
+        hex = hex.slice(4, 4 + 2) + hex.slice(2, 2 + 2) + hex.slice(0, 0 + 2);
 
         num = parseInt(hex, 16);
     } else {
@@ -221,102 +221,102 @@ function decodeStickCmd(rcv) {
         // V1 = Position Volant 1. FF entspricht nicht vorhanden.
         // V2 = Position Volant 2. FF entspricht nicht vorhanden.
 
-        snr = rcv.substr(2, 6);
+        snr = rcv.slice(2, 2 + 6);
 
-        rcvTyp = rcv.substr(8, 4);
-        payload = rcv.substr(12);
+        rcvTyp = rcv.slice(8, 8 + 4);
+        payload = rcv.slice(12);
         switch (rcvTyp) {
             case '8011': // parameterGetResponse
-                parameterType = payload.substr(0, 8);
+                parameterType = payload.slice(0, 0 + 8);
                 switch (parameterType) {
                     case '01000003': //position
                     case '01000005': //position
                         msgType = "position";
-                        params.position = wmsPosHexToPercent(payload.substr(8, 2));
-                        params.angle = wmsAngleHexToPercent(payload.substr(10, 2));
-                        params.valance_1 = payload.substr(12, 2);
-                        params.valance_2 = payload.substr(14, 2);
-                        params.moving = !(payload.substr(16, 2) === '00');
+                        params.position = wmsPosHexToPercent(payload.slice(8, 8 + 2));
+                        params.angle = wmsAngleHexToPercent(payload.slice(10, 10 + 2));
+                        params.valance_1 = payload.slice(12, 12 + 2);
+                        params.valance_2 = payload.slice(14, 14 + 2);
+                        params.moving = !(payload.slice(16, 16 + 2) === '00');
                         break;
                     case '0C000006': //auto modes & limits
                         params.type = 'autoSettings';
-                        params.wind = parseInt(payload.substr(12, 2), 16);
-                        params.rain = parseInt(payload.substr(22, 2), 16);
-                        params.sun = parseInt(payload.substr(24, 2), 16);
-                        params.dusk = parseInt(payload.substr(26, 2), 16);
-                        params.op = parseInt(payload.substr(28, 2), 16);
+                        params.wind = parseInt(payload.slice(12, 12 + 2), 16);
+                        params.rain = parseInt(payload.slice(22, 22 + 2), 16);
+                        params.sun = parseInt(payload.slice(24, 24 + 2), 16);
+                        params.dusk = parseInt(payload.slice(26, 26 + 2), 16);
+                        params.op = parseInt(payload.slice(28, 28 + 2), 16);
                         break;
                     case '26000046':
                         params.type = 'clock';
-                        params.unknown = payload.substr(20);
+                        params.unknown = payload.slice(20);
                         break;
                 }
                 break;
             case '7071':
                 msgType = 'blindMoveToPosResponse';
-                params.unknown1 = payload.substr(0, 10);
-                params.prevPosition = wmsPosHexToPercent(payload.substr(10, 2));
-                params.prevAngle = wmsAngleHexToPercent(payload.substr(12, 2));
-                params.prevValance_1 = payload.substr(14, 2);
-                params.prevValance_2 = payload.substr(16, 2);
-                params.unknown2 = payload.substr(18, 8);
+                params.unknown1 = payload.slice(0, 0 + 10);
+                params.prevPosition = wmsPosHexToPercent(payload.slice(10, 10 + 2));
+                params.prevAngle = wmsAngleHexToPercent(payload.slice(12, 12 + 2));
+                params.prevValance_1 = payload.slice(14, 14 + 2);
+                params.prevValance_2 = payload.slice(16, 16 + 2);
+                params.unknown2 = payload.slice(18, 18 + 8);
                 break;
             case '7080':
                 msgType = 'weatherBroadcast';
-                params.unknown_1 = payload.substr(0, 2);
-                params.wind = parseInt(payload.substr(2, 2), 16);
-                params.lumen = payload.substr(4, 2) === '00' ? parseInt(payload.substr(12, 2), 16) * 2 : parseInt(payload.substr(4, 2), 16) * parseInt(payload.substr(12, 2), 16) * 2;
-                params.unknown_2 = payload.substr(6, 6);
-                params.unknown_3 = payload.substr(14, 2);
-                params.rain = payload.substr(16, 2) === 'C8';
-                params.temp = parseInt(payload.substr(18, 2), 16) / 2 - 35;
-                params.unknown_4 = payload.substr(20);
+                params.unknown_1 = payload.slice(0, 0 + 2);
+                params.wind = parseInt(payload.slice(2, 2 + 2), 16);
+                params.lumen = payload.slice(4, 4 + 2) === '00' ? parseInt(payload.slice(12, 12 + 2), 16) * 2 : parseInt(payload.slice(4, 4 + 2), 16) * parseInt(payload.slice(12, 12 + 2), 16) * 2;
+                params.unknown_2 = payload.slice(6, 6 + 6);
+                params.unknown_3 = payload.slice(14, 14 + 2);
+                params.rain = payload.slice(16, 16 + 2) === 'C8';
+                params.temp = parseInt(payload.slice(18, 18 + 2), 16) / 2 - 35;
+                params.unknown_4 = payload.slice(20);
                 break;
             case '8020':
-                parameterType = payload.substr(0, 8);
+                parameterType = payload.slice(0, 0 + 8);
                 switch (parameterType) {
                     case '0B080009': //clock
                         msgType = 'clock';
-                        params.year = parseInt(payload.substr(8, 2), 16);
-                        params.month = parseInt(payload.substr(10, 2), 16);
-                        params.day = parseInt(payload.substr(12, 2), 16);
-                        params.hour = parseInt(payload.substr(14, 2), 16);
-                        params.minute = parseInt(payload.substr(16, 2), 16);
-                        params.second = parseInt(payload.substr(18, 2), 16);
-                        params.day_of_week = parseInt(payload.substr(20, 2), 16);
-                        params.unknown = payload.substr(22);
+                        params.year = parseInt(payload.slice(8, 8 + 2), 16);
+                        params.month = parseInt(payload.slice(10, 10 + 2), 16);
+                        params.day = parseInt(payload.slice(12, 12 + 2), 16);
+                        params.hour = parseInt(payload.slice(14, 14 + 2), 16);
+                        params.minute = parseInt(payload.slice(16, 16 + 2), 16);
+                        params.second = parseInt(payload.slice(18, 18 + 2), 16);
+                        params.day_of_week = parseInt(payload.slice(20, 20 + 2), 16);
+                        params.unknown = payload.slice(22);
                         break;
                         break;
                 }
                 break;
             case '5018':
                 msgType = 'joinNetworkRequest';
-                params.panId = payload.substr(0, 4);
-                params.networkKey = payload.substr(4, 32).match(/../g).reverse().join("");
-                params.unknown = payload.substr(36, 2);
-                params.channel = parseInt(payload.substr(38, 2), 16);
+                params.panId = payload.slice(0, 0 + 4);
+                params.networkKey = payload.slice(4, 4 + 32).match(/../g).reverse().join("");
+                params.unknown = payload.slice(36, 36 + 2);
+                params.channel = parseInt(payload.slice(38, 38 + 2), 16);
                 break;
             case '5060':
                 msgType = 'switchChannelRequest';
-                params.panId = payload.substr(0, 4);
-                params.deviceType = payload.substr(4, 2);
-                params.channel = parseInt(payload.substr(6, 2), 16);
+                params.panId = payload.slice(0, 0 + 4);
+                params.deviceType = payload.slice(4, 4 + 2);
+                params.channel = parseInt(payload.slice(6, 6 + 2), 16);
                 break;
             case '50AC':
                 msgType = 'ackMsg';
-                params.unknown = payload.substr(0, 4);
+                params.unknown = payload.slice(0, 0 + 4);
                 break;
             case '7020':
                 msgType = 'scanRequest';
-                params.panId = payload.substr(0, 4);
-                params.deviceType = payload.substr(4, 2);
+                params.panId = payload.slice(0, 0 + 4);
+                params.deviceType = payload.slice(4, 4 + 2);
                 break;
             case '7021':
                 msgType = 'scanResponse';
-                params.deviceType = payload.substr(4, 2); //63: Wetterstation, 06: Webcontrol, 02: Stick/software, 20: Zwischenstecker, 21: Aktor UP
+                params.deviceType = payload.slice(4, 4 + 2); //63: Wetterstation, 06: Webcontrol, 02: Stick/software, 20: Zwischenstecker, 21: Aktor UP
                 params.deviceTypeStr = "<unknown>";
-                params.panId = payload.substr(0, 4);
-                params.unknown = payload.substr(6); //optional
+                params.panId = payload.slice(0, 0 + 4);
+                params.unknown = payload.slice(6); //optional
                 switch (params.deviceType) {
                     case '02':
                         params.deviceTypeStr = 'Stick/software   ';
@@ -352,15 +352,15 @@ function decodeStickCmd(rcv) {
                 break;
             case '7070':
                 msgType = 'blindMoveToPos';
-                params.unknown = payload.substr(0, 2);
-                params.position = wmsPosHexToPercent(payload.substr(2, 2));
-                params.angle = wmsAngleHexToPercent(payload.substr(4, 2));
-                params.valance_1 = payload.substr(6, 2);
-                params.valance_2 = payload.substr(8, 2);
+                params.unknown = payload.slice(0, 0 + 2);
+                params.position = wmsPosHexToPercent(payload.slice(2, 2 + 2));
+                params.angle = wmsAngleHexToPercent(payload.slice(4, 4 + 2));
+                params.valance_1 = payload.slice(6, 6 + 2);
+                params.valance_2 = payload.slice(8, 8 + 2);
                 break;
             case '8010':
                 msgType = 'parameterGetRequest';
-                params.parameter = payload.substr(0) //01000005: position, 26000046: clock timer settings, 0C000006: auto modes & limits
+                params.parameter = payload.slice(0) //01000005: position, 26000046: clock timer settings, 0C000006: auto modes & limits
                 break;
         }
     } else if (rcv.startsWith('{g')) {
@@ -383,7 +383,7 @@ function wmsAngleHexToPercent(angHex) {
 
 //--------------------------------------------------------------------------------------------------
 function wmsAnglePercentToHex(angPercent) {
-    return ('0' + (Math.min(Math.max(Math.round(angPercent / 100 * wmsAngle), -75), 75) + 127).toString(16)).substr(-2).toUpperCase();
+    return ('0' + (Math.min(Math.max(Math.round(angPercent / 100 * wmsAngle), -75), 75) + 127).toString(16)).slice(-2).toUpperCase();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -393,7 +393,7 @@ function wmsPosHexToPercent(posHex) {
 
 //--------------------------------------------------------------------------------------------------
 function wmsPosPercentToHex(posPercent) {
-    return ('0' + (Math.min(Math.max(posPercent, 0), 100) * 2).toString(16)).substr(-2).toUpperCase();
+    return ('0' + (Math.min(Math.max(posPercent, 0), 100) * 2).toString(16)).slice(-2).toUpperCase();
 }
 
 //--------------------------------------------------------------------------------------------------

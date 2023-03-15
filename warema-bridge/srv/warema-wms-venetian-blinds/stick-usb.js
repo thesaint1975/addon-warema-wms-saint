@@ -95,8 +95,8 @@ class StickUsb extends WmsVbStick {
                             testParser.on('data', function (data) {
                                 var rcvString = data.toString('utf8') + DelimiterChar;
                                 log.silly(port.path + " received: " + rcvString);
-                                if (rcvString.substr(0, 2) === "{v") {
-                                    var version = rcvString.substr(2);
+                                if (rcvString.slice(0, 0 + 2) === "{v") {
+                                    var version = rcvString.slice(2);
                                     var posEndMarker = version.lastIndexOf('}');
                                     if (posEndMarker >= 1) {
                                         version = version.substring(0, posEndMarker);
