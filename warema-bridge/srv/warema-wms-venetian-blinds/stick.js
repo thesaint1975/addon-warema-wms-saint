@@ -487,7 +487,7 @@ class Stick {
         this.watchMovingIntervalTimer = undefined;
         this.watchMovingIntervalMsec = 0;
         this.enableCmdConfirmationNotification = false
-        // this.setWatchMovingInterval( 200 );
+        this.setWatchMovingInterval( 200 );
 
         privateInitWmsStatistics(this);
 
