@@ -9,8 +9,8 @@ process.on('SIGINT', function () {
 const mqttServer = process.env.MQTT_SERVER || 'mqtt://localhost'
 const ignoredDevices = process.env.IGNORED_DEVICES ? process.env.IGNORED_DEVICES.split(',') : [];
 const forceDevices = process.env.FORCE_DEVICES ? process.env.FORCE_DEVICES.split(',') : [];
-const pollingInterval = process.env.POLLING_INTERVAL || 3000;
-const movingInterval = process.env.MOVING_INTERVAL || 500;
+const pollingInterval = process.env.POLLING_INTERVAL || 5000;
+const movingInterval = process.env.MOVING_INTERVAL || 1000;
 
 const settingsPar = {
     wmsChannel: process.env.WMS_CHANNEL || 17,
